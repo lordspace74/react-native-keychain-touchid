@@ -1,5 +1,5 @@
 {
-  "name": "BitGoKeychainTouchID",
+  "name": "react-native-bitgo-keychain-touchid",
   "version": "0.0.1",
   "keywords": "react-native",
   "dependencies": {
