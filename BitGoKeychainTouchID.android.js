@@ -13,7 +13,9 @@ var BitGoKeychainTouchID = {
     warning('Not yet implemented for Android.');
   },
   hasCredentials(){
-    return false;
+    return new Promise(function(resolve, reject){
+      resolve(false);
+    });
   },
   retrieveCredentials(){
     return new Promise(function(resolve, reject){
