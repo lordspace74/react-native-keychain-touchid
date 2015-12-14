@@ -6,6 +6,15 @@
  */
 'use strict';
 
+var Promise = require('bluebird');
+var NativeAES = require('NativeModules').BitGoAES;
+var NativeHash = require('NativeModules').BitGoHash;
+
+console.log(NativeAES);
+console.log(NativeHash);
+
+console.log("\n\n\nARIK WAS HERE!\n\n\n");
+
 var warning = require('warning');
 
 var BitGoKeychainTouchID = {
@@ -25,7 +34,11 @@ var BitGoKeychainTouchID = {
   storeCredentials(){
   },
   deleteCredentials(){
+  },
+  androidFlag(){
+    return true;
   }
+
 };
 
 module.exports = BitGoKeychainTouchID;
