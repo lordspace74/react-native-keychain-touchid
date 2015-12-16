@@ -4,6 +4,7 @@ import com.bitgo.crypto.encoding.HexBinary;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.Callback;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -19,44 +20,46 @@ public class BitGoHash extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public static String md5(String input) {
+    public static void md5(String input, Callback success, Callback error) {
 
         byte[] hash = new byte[0];
         try {
             hash = digest(input, "MD5");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            error.invoke("" + e);
         }
 
-        return exportHash(hash);
-
+        success.invoke(exportHash(hash));
     }
 
     @ReactMethod
-    public static String sha256(String input) {
+    public static void sha256(String input, Callback success, Callback error) {
 
         byte[] hash = new byte[0];
         try {
             hash = digest(input, "SHA-256");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            error.invoke("" + e);
         }
 
-        return exportHash(hash);
+        success.invoke(exportHash(hash));
 
     }
 
     @ReactMethod
-    public static String sha512(String input) {
+    public static void sha512(String input, Callback success, Callback error) {
 
         byte[] hash = new byte[0];
         try {
             hash = digest(input, "SHA-512");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            error.invoke("" + e);
         }
 
-        return exportHash(hash);
+        success.invoke(exportHash(hash));
 
     }
 

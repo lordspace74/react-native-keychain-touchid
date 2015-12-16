@@ -1,12 +1,13 @@
 package com.bitgo.crypto.encryption;
 
+import android.telecom.Call;
 import android.util.Base64;
 
 import com.bitgo.crypto.encoding.HexBinary;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.InvalidAlgorithmParameterException;
@@ -35,85 +36,100 @@ public class BitGoAES extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public static String generateInitializationVector() { // 128 bits or 32 bytes
+    public static void generateInitializationVector(Callback success, Callback error) { // 128 bits or 32 bytes
 
         KeyGenerator keyGen = null;
         try {
             keyGen = KeyGenerator.getInstance(ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return null; // should never happen due to fixed algorithm
+            error.invoke("" + e);
         }
         keyGen.init(128);
         SecretKey secretKey = keyGen.generateKey();
 
         byte[] key = secretKey.getEncoded();
-        return HexBinary.binaryToHex(key);
+        success.invoke(HexBinary.binaryToHex(key));
 
     }
 
     @ReactMethod
-    public static String generateKey() { // 256 bits or 64 bytes
+    public static void generateKey(Callback success, Callback error) { // 256 bits or 64 bytes
 
         KeyGenerator keyGen = null;
         try {
             keyGen = KeyGenerator.getInstance(ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return null; // should never happen due to fixed algorithm
+            error.invoke("" + e);
         }
         keyGen.init(256);
         SecretKey secretKey = keyGen.generateKey();
 
         byte[] key = secretKey.getEncoded();
-        return HexBinary.binaryToHex(key);
+        success.invoke(HexBinary.binaryToHex(key));
 
     }
 
     @ReactMethod
-    public static String encrypt(String data, String key, String initializationVector) throws InvalidKeyException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException { // returns a base64-encoded string
+    public static void encrypt(String data, String key, String initializationVector, Callback success, Callback error) { // returns a base64-encoded string
 
-        TyrannyOverride.overrideTyranny();
-
-        SecretKeySpec aesKeySpec = new SecretKeySpec(HexBinary.hexToBinary(key), ALGORITHM);
-        IvParameterSpec ivSpec = new IvParameterSpec(HexBinary.hexToBinary(initializationVector));
-
-        // Encrypt cipher
-        Cipher cipher = null;
         try {
-            cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            e.printStackTrace();
-            return null; // should never happen due to fixed cipher
-        }
-        cipher.init(Cipher.ENCRYPT_MODE, aesKeySpec, ivSpec);
-        byte[] encrypted = cipher.doFinal(data.getBytes());
+            TyrannyOverride.overrideTyranny();
 
-        return Base64.encodeToString(encrypted, Base64.DEFAULT);
+            SecretKeySpec aesKeySpec = new SecretKeySpec(HexBinary.hexToBinary(key), ALGORITHM);
+            IvParameterSpec ivSpec = new IvParameterSpec(HexBinary.hexToBinary(initializationVector));
+
+            // Encrypt cipher
+            Cipher cipher = null;
+            try {
+                cipher = Cipher.getInstance(CIPHER_ALGORITHM);
+            } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+                e.printStackTrace();
+                error.invoke("" + e);
+            }
+            cipher.init(Cipher.ENCRYPT_MODE, aesKeySpec, ivSpec);
+            byte[] encrypted = cipher.doFinal(data.getBytes());
+
+            success.invoke(Base64.encodeToString(encrypted, Base64.DEFAULT));
+        } catch (InvalidKeyException|
+                InvalidAlgorithmParameterException|
+                BadPaddingException|
+                IllegalBlockSizeException e) {
+            e.printStackTrace();
+            error.invoke("" + e);
+        }
 
     }
 
     @ReactMethod
-    public static String decrypt(String base64Data, String key, String initializationVector) throws InvalidAlgorithmParameterException, InvalidKeyException, IOException, BadPaddingException, IllegalBlockSizeException { // accepts a base64-encoded string
+    public static void decrypt(String base64Data, String key, String initializationVector, Callback success, Callback error) {
 
-        TyrannyOverride.overrideTyranny();
-
-        SecretKeySpec aesKeySpec = new SecretKeySpec(HexBinary.hexToBinary(key), ALGORITHM);
-        IvParameterSpec ivSpec = new IvParameterSpec(HexBinary.hexToBinary(initializationVector));
-
-        // Decrypt cipher
-        Cipher cipher = null;
         try {
-            cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            TyrannyOverride.overrideTyranny();
+
+            SecretKeySpec aesKeySpec = new SecretKeySpec(HexBinary.hexToBinary(key), ALGORITHM);
+            IvParameterSpec ivSpec = new IvParameterSpec(HexBinary.hexToBinary(initializationVector));
+
+            // Decrypt cipher
+            Cipher cipher = null;
+            try {
+                cipher = Cipher.getInstance(CIPHER_ALGORITHM);
+            } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+                e.printStackTrace();
+                error.invoke("" + e);
+            }
+            cipher.init(Cipher.DECRYPT_MODE, aesKeySpec, ivSpec);
+            byte[] original = cipher.doFinal(Base64.decode(base64Data, Base64.DEFAULT));
+
+            success.invoke(new String(original, Charset.forName("UTF-8")));
+        } catch (InvalidKeyException|
+                InvalidAlgorithmParameterException|
+                BadPaddingException|
+                IllegalBlockSizeException e) {
             e.printStackTrace();
-            return null; // should never happen due to fixed cipher
+            error.invoke("" + e);
         }
-        cipher.init(Cipher.DECRYPT_MODE, aesKeySpec, ivSpec);
-        byte[] original = cipher.doFinal(Base64.decode(base64Data, Base64.DEFAULT));
-
-        return new String(original, Charset.forName("UTF-8"));
-
     }
 
     @Override
