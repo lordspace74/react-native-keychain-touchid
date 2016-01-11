@@ -6,8 +6,9 @@
  */
 
 var Promise = require('bluebird');
-var NativeAES = require('NativeModules').BitGoAES;
-var NativeHash = require('NativeModules').BitGoHash;
+var NativeModules = require('react-native').NativeModules;
+var NativeAES = NativeModules.BitGoAES;
+var NativeHash = NativeModules.BitGoHash;
 var React = require('react-native');
 var {
   AsyncStorage
