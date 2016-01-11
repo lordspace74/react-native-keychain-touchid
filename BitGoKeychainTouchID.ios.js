@@ -5,7 +5,8 @@
 'use strict';
 
 var Promise = require('bluebird');
-var NativeBitGoKeychainTouchID = require('NativeModules').BitGoKeychainTouchID;
+var NativeModules = require('react-native').NativeModules;
+var NativeBitGoKeychainTouchID = NativeModules.BitGoKeychainTouchID;
 
 /**
  * High-level docs for the BitGoKeychainTouchID iOS API can be written here.
