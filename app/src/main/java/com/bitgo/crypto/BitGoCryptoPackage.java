@@ -1,7 +1,6 @@
 package com.bitgo.crypto;
 
-import com.bitgo.crypto.encryption.BitGoAES;
-import com.bitgo.crypto.hashing.BitGoHash;
+import com.bitgo.crypto.pincode.BitGoPincodeModule;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
@@ -19,8 +18,7 @@ public class BitGoCryptoPackage implements ReactPackage {
                               ReactApplicationContext reactContext) {
     List<NativeModule> modules = new ArrayList<>();
 
-    modules.add(new BitGoAES(reactContext));
-    modules.add(new BitGoHash(reactContext));
+    modules.add(new BitGoPincodeModule(reactContext));
 
     return modules;
   }
