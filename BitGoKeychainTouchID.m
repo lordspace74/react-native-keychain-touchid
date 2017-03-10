@@ -1,5 +1,5 @@
 #import "BitGoKeychainTouchID.h"
-#import "RCTUtils.h"
+#import <React/RCTUtils.h>
 
 @implementation BitGoKeychainTouchID
 
@@ -18,7 +18,7 @@ RCT_EXPORT_METHOD(storeCredentialsForAccount:(NSString *)email withToken:(NSStri
     SecAccessControlRef sacObject = SecAccessControlCreateWithFlags(
       kCFAllocatorDefault,
       kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly,
-      kSecAccessControlTouchIDCurrentSet, // Restrict keychain item access to TouchID, and invalidate access when TouchID fingerprint set is changed  
+      kSecAccessControlTouchIDCurrentSet, // Restrict keychain item access to TouchID, and invalidate access when TouchID fingerprint set is changed
       &error
     );
 
