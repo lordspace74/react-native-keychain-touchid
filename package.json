@@ -4,6 +4,10 @@
   "keywords": "react-native",
   "main": "BitGoKeychainTouchID",
   "dependencies": {
-    "bluebird": "*"
+    "bluebird": "*",
+    "react-native": "^0.42.0"
+  },
+  "devDependencies": {
+    "flow-bin": "0.37"
   }
 }

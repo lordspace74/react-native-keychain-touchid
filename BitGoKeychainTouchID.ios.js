@@ -4,16 +4,16 @@
  */
 'use strict';
 
-var Promise = require('bluebird');
-var NativeModules = require('react-native').NativeModules;
-var NativeBitGoKeychainTouchID = NativeModules.BitGoKeychainTouchID;
+import Promise from 'bluebird';
+import { NativeModules } from 'react-native';
+const NativeBitGoKeychainTouchID = NativeModules.BitGoKeychainTouchID;
 
 /**
  * High-level docs for the BitGoKeychainTouchID iOS API can be written here.
  */
 
-var BitGoKeychainTouchID = {
-  hasCredentials(){
+const BitGoKeychainTouchID = {
+  hasCredentials(): Promise {
     return new Promise(function(resolve, reject) {
       NativeBitGoKeychainTouchID.hasCredentialsWithCallback(
       function(err, hasCredentials) {
@@ -24,7 +24,7 @@ var BitGoKeychainTouchID = {
       });
     });
   },
-  retrieveCredentials(promptString){
+  retrieveCredentials(promptString: string): Promise{
     return new Promise(function(resolve, reject) {
       NativeBitGoKeychainTouchID.retrieveCredentialsWithTouchIDPrompt(
       promptString,
@@ -36,7 +36,7 @@ var BitGoKeychainTouchID = {
       });
     });
   },
-  storeCredentials(username, password){
+  storeCredentials(username: string, password: string){
     NativeBitGoKeychainTouchID.storeCredentialsForAccount(username, password);
   },
   deleteCredentials(){
@@ -45,4 +45,4 @@ var BitGoKeychainTouchID = {
 
 };
 
-module.exports = BitGoKeychainTouchID;
+export default BitGoKeychainTouchID;
