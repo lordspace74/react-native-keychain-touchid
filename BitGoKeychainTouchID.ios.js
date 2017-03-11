@@ -13,7 +13,7 @@ const NativeBitGoKeychainTouchID = NativeModules.BitGoKeychainTouchID;
  */
 
 const BitGoKeychainTouchID = {
-  hasCredentials(): Promise {
+  hasCredentials(): Promise<boolean> {
     return new Promise(function(resolve, reject) {
       NativeBitGoKeychainTouchID.hasCredentialsWithCallback(
       function(err, hasCredentials) {
@@ -24,7 +24,7 @@ const BitGoKeychainTouchID = {
       });
     });
   },
-  retrieveCredentials(promptString: string): Promise{
+  retrieveCredentials(promptString: string): Promise<{ username: string, token: string }>{
     return new Promise(function(resolve, reject) {
       NativeBitGoKeychainTouchID.retrieveCredentialsWithTouchIDPrompt(
       promptString,
