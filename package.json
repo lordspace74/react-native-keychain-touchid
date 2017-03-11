@@ -7,7 +7,6 @@
     "bluebird": "*"
   },
   "devDependencies": {
-    "flow-bin": "0.37",
-    "react-native": "*"
+    "flow-bin": "0.37"
   }
 }
