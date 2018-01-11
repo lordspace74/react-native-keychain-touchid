@@ -6,10 +6,10 @@
 RCT_EXPORT_MODULE()
 
 - (NSString *)serviceName{
-    return @"com.bitgo.ios";
+    return @"LocoPassCode";
 }
 - (NSString *)userDefaultsStorageIndicatorKey{
-    return @"stored-credentials";
+    return @"touchIdEnabled";
 }
 
 RCT_EXPORT_METHOD(storeCredentialsForAccount:(NSString *)email withToken:(NSString *)token){
@@ -36,22 +36,19 @@ RCT_EXPORT_METHOD(storeCredentialsForAccount:(NSString *)email withToken:(NSStri
 
     if(err == errSecSuccess || err == errSecDuplicateItem){
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:@YES forKey:[self userDefaultsStorageIndicatorKey]];
+        [defaults setBool:true forKey:[self userDefaultsStorageIndicatorKey]];
         [defaults synchronize];
     }
 
 }
 
 RCT_EXPORT_METHOD(hasCredentialsWithCallback:(RCTResponseSenderBlock)callback){
-
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSNumber *isStored = [defaults objectForKey:[self userDefaultsStorageIndicatorKey]];
-    if(isStored && isStored.boolValue == YES){
+    bool isStored = [[NSUserDefaults standardUserDefaults] boolForKey:[self userDefaultsStorageIndicatorKey]];
+    if(isStored == true){
         callback(@[[NSNull null], @YES]);
         return;
     }
     callback(@[[NSNull null], @NO]);
-
 }
 
 RCT_EXPORT_METHOD(retrieveCredentialsWithTouchIDPrompt:(NSString *)promptString andCallback:(RCTResponseSenderBlock)callback){
@@ -101,7 +98,7 @@ RCT_EXPORT_METHOD(deleteCredentials){
 
     if(status == errSecSuccess){
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:@NO forKey:[self userDefaultsStorageIndicatorKey]];
+        [defaults setBool:false forKey:[self userDefaultsStorageIndicatorKey]];
         [defaults synchronize];
     }
 
